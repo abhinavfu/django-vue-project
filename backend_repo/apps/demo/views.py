@@ -163,10 +163,13 @@ class RandomCommentListView(generics.ListAPIView):
         # random comments
         import random
         total_random_comments = 3 # random comments count
-        comments = set()
-        while len(comments)<total_random_comments:
-                items = random.choices(comments_list, k=1) # [one_item]
-                comments.add(*items)
-        
-        serializer = CommentSerializer(comments, many=True)
-        return Response({"response":serializer.data}, status=status.HTTP_200_OK)
+        if len(comments_list) > total_random_comments:
+            comments = set()
+            while len(comments)<total_random_comments:
+                    items = random.choices(comments_list, k=1) # [one_item]
+                    comments.add(*items)
+            
+            serializer = CommentSerializer(comments, many=True)
+            return Response({"response":serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"response":f"To get random comments in a post, there should be atleast {total_random_comments+1} comments on a post"}, status=status.HTTP_200_OK)
