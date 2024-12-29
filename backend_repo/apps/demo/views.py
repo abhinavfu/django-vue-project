@@ -24,6 +24,9 @@ class PostListView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    def get_queryset(self):
+        return Post.objects.all().order_by('-timestamp')
+
     def create(self, request, *args, **kwargs):
         try:
             user = User.objects.get(username=auth.get_user(request))
@@ -92,6 +95,9 @@ class PostView(generics.RetrieveUpdateDestroyAPIView):
 class CommentListView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        return Comment.objects.all().order_by('-timestamp') 
 
     def create(self, request,post_id, *args, **kwargs):
         try:
