@@ -96,8 +96,10 @@ class CommentListView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+
     def get_queryset(self):
-        return Comment.objects.all().order_by('-timestamp') 
+        post=Post.objects.get(id=self.kwargs['post_id'])
+        return Comment.objects.filter(post=post).order_by('-timestamp') 
 
     def create(self, request,post_id, *args, **kwargs):
         try:
@@ -178,4 +180,4 @@ class RandomCommentListView(generics.ListAPIView):
             serializer = CommentSerializer(comments, many=True)
             return Response({"response":serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"response":f"To get random comments in a post, there should be atleast {total_random_comments+1} comments on a post"}, status=status.HTTP_200_OK)
+            return Response({"response":f"To get {total_random_comments} random comments in a post, there should be atleast {total_random_comments+1} comments on a post"}, status=status.HTTP_200_OK)
